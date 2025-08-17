@@ -366,39 +366,51 @@ function createWebsite(design, code) {
 </div>
   </div>
 </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-brand">YourName</div>
-                <div class="footer-links">
-                    <a href="#home" class="footer-link">Home</a>
-                    <a href="#about" class="footer-link">About</a>
-                    <a href="#skills" class="footer-link">Skills</a>
-                    <a href="#projects" class="footer-link">Projects</a>
-                    <a href="#contact" class="footer-link">Contact</a>
-                </div>
-                <div class="footer-social">
-                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; <span id="year"></span> YourName. All rights reserved.</p>
-                <p>Made with <i class="fas fa-heart"></i> and <i class="fas fa-code"></i></p>
-            </div>
-        </footer>
+<!-- footer -->
+<footer class="neo-footer">
+  <!-- Glowing orb that follows cursor -->
+  <div class="footer-orb" id="footerOrb"></div>
+  
+  <!-- Holographic navigation -->
+  <div class="holographic-nav">
+    <div class="nav-beam"></div>
+    <div class="nav-links">
+      <a href="#home" class="nav-link" data-text="HOME">HOME</a>
+      <a href="#about" class="nav-link" data-text="ABOUT">ABOUT</a>
+      <a href="#skills" class="nav-link" data-text="SKILLS">SKILLS</a>
+      <a href="#projects" class="nav-link" data-text="PROJECTS">PROJECTS</a>
+      <a href="#contact" class="nav-link" data-text="CONTACT">CONTACT</a>
     </div>
+  </div>
 
-    <!-- Random Surprise Modal -->
-    <div class="surprise-modal">
-        <div class="surprise-content">
-            <div class="surprise-close">&times;</div>
-            <div class="surprise-body"></div>
-        </div>
+  <!-- Social links with particle effects -->
+  <div class="social-matrix">
+    <a href="#" class="social-icon" data-tooltip="GitHub">
+      <i class="fab fa-github"></i>
+      <span class="particle-ring"></span>
+    </a>
+    <a href="#" class="social-icon" data-tooltip="LinkedIn">
+      <i class="fab fa-linkedin-in"></i>
+      <span class="particle-ring"></span>
+    </a>
+    <a href="#" class="social-icon" data-tooltip="Twitter">
+      <i class="fab fa-twitter"></i>
+      <span class="particle-ring"></span>
+    </a>
+    <a href="#" class="social-icon" data-tooltip="Instagram">
+      <i class="fab fa-instagram"></i>
+      <span class="particle-ring"></span>
+    </a>
+  </div>
+
+  <!-- Digital signature with binary code effect -->
+  <div class="digital-signature">
+    <div class="binary-flow">01001000 01101001 00100000 01001001 00100111 01101101 00100000 01001011 01110101 01101110 01100001 01101100</div>
+    <div class="signature-text">
+      © <span id="year"></span> | Designed with <span class="pulse">❤️</span> & <span class="glitch">CODE</span>
     </div>
+  </div>
+</footer>
 
     <!-- Chat Bot -->
 <div class="robo-chatbot-container">
@@ -908,6 +920,8 @@ document.getElementById('email').addEventListener('blur', function() {
 });
 </script>
 
+
+
 <!-- Chatbot js -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -1089,6 +1103,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+  // footer js 
+// Current year
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Floating orb follows mouse
+document.addEventListener('mousemove', (e) => {
+  const orb = document.getElementById('footerOrb');
+  orb.style.left = `${e.clientX}px`;
+  orb.style.top = `${e.clientY}px`;
+});
+
+// Glitch effect on random intervals
+setInterval(() => {
+  const glitch = document.querySelector('.glitch');
+  glitch.style.animation = 'none';
+  setTimeout(() => {
+    glitch.style.animation = 'glitch-effect 2s infinite';
+  }, 50);
+}, 3000);
+
+// Binary code changes randomly
+const binaryElement = document.querySelector('.binary-flow');
+const binaryStrings = [
+  "01001000 01101001 00100000 01001001 00100111 01101101 00100000 01001011 01110101 01101110 01100001 01101100",
+  "01000011 01110010 01100101 01100001 01110100 01101001 01110110 01100101 00100000 01000110 01101111 01101111 01110100 01100101 01110010",
+  "01000100 01100101 01110011 01101001 01100111 01101110 01100101 01100100 00100000 01110111 01101001 01110100 01101000 00100000 01000011 01001111 01000100 01000101"
+];
+
+setInterval(() => {
+  const randomBinary = binaryStrings[Math.floor(Math.random() * binaryStrings.length)];
+  binaryElement.textContent = randomBinary;
+}, 5000);
+
 </script>
 
 </body>

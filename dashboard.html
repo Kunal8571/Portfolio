@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Kunal's Portfolio</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+
+    <style>
+           
+        :root {
+            --admin-primary: #6c5ce7;
+            --admin-primary-light: #8577e9;
+            --admin-secondary: #00cec9;
+            --admin-dark: #1a2238;
+            --admin-darker: #0f1425;
+            --admin-light: #f8f9ff;
+            --admin-lighter: #ffffff;
+            --admin-success: #28a745;
+            --admin-danger: #dc3545;
+            --admin-warning: #ffc107;
+            --admin-info: #17a2b8;
+            --admin-border: rgba(0, 0, 0, 0.1);
+            --admin-text: #333;
+            --admin-text-light: #666;
+            --admin-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --admin-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--admin-light);
+            color: var(--admin-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Admin Container */
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Enhanced with animations */
+        .admin-sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, var(--admin-dark), var(--admin-darker));
+            color: white;
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: var(--admin-transition);
+            transform: translateX(0);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .admin-brand {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+            animation: fadeInDown 0.5s ease-out;
+        }
+
+        .admin-brand h2 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .admin-brand p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .admin-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .admin-menu li {
+            margin-bottom: 5px;
+            opacity: 0;
+            animation: fadeInLeft 0.5s ease-out forwards;
+        }
+
+        /* Staggered animation for menu items */
+        .admin-menu li:nth-child(1) { animation-delay: 0.1s; }
+        .admin-menu li:nth-child(2) { animation-delay: 0.2s; }
+        .admin-menu li:nth-child(3) { animation-delay: 0.3s; }
+        .admin-menu li:nth-child(4) { animation-delay: 0.4s; }
+        .admin-menu li:nth-child(5) { animation-delay: 0.5s; }
+        .admin-menu li:nth-child(6) { animation-delay: 0.6s; }
+        .admin-menu li:nth-child(7) { animation-delay: 0.7s; }
+        .admin-menu li:nth-child(8) { animation-delay: 0.8s; }
+        .admin-menu li:nth-child(9) { animation-delay: 0.9s; }
+
+        .admin-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: var(--admin-transition);
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: var(--admin-transition);
+        }
+
+        .admin-menu a:hover::before {
+            left: 100%;
+        }
+
+        .admin-menu a:hover, .admin-menu a.active {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            padding-left: 30px;
+        }
+
+        .admin-menu i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .admin-menu .badge {
+            margin-left: auto;
+            background-color: var(--admin-primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 6px;
+            border-radius: 10px;
+        }
+
+        /* Main Content Area */
+        .admin-main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+            transition: var(--admin-transition);
+        }
+
+        .admin-main.expanded {
+            margin-left: 0;
+        }
+
+        /* Header with animated toggle */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--admin-border);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .admin-title {
+            font-size: 1.8rem;
+            color: var(--admin-dark);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .admin-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--admin-primary), var(--admin-secondary));
+            border-radius: 3px;
+        }
+
+        .admin-user {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--admin-transition);
+            padding: 8px 12px;
+            border-radius: 30px;
+        }
+
+        .admin-user:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+            border: 2px solid var(--admin-primary);
+            transition: var(--admin-transition);
+        }
+
+        .admin-user:hover img {
+            transform: rotate(10deg);
+        }
+
+        .admin-user .user-name {
+            font-weight: 500;
+            margin-right: 8px;
+        }
+
+        .admin-user .user-role {
+            font-size: 0.8rem;
+            color: var(--admin-text-light);
+        }
+
+        /* Stats Cards with hover animations */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: var(--admin-lighter);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--admin-shadow);
+            display: flex;
+            align-items: center;
+            transition: var(--admin-transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.1), rgba(0, 206, 201, 0.1));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--admin-transition);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.5rem;
+            color: white;
+            transition: var(--admin-transition);
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-light));
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, var(--admin-success), #5cb85c);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, var(--admin-warning), #f0ad4e);
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, var(--admin-danger), #d9534f);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--admin-dark);
+            font-weight: 700;
+        }
+
+        .stat-info p {
+            margin: 5px 0 0;
+            color: var(--admin-text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Admin Cards with subtle animations */
+        .admin-card {
+            background-color: var(--admin-lighter);
+            border-radius: 12px;
+            box-shadow: var(--admin-shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: var(--admin-transition);
+            animation: fadeInUp 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--admin-primary), var(--admin-secondary));
+            transition: var(--admin-transition);
+        }
+
+        .admin-card:hover::after {
+            width: 6px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--admin-dark);
+            font-weight: 600;
+        }
+
+        /* Form Styles with floating labels */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--admin-dark);
+            transition: var(--admin-transition);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--admin-transition);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus {
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+            outline: none;
+            background-color: white;
+        }
+
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons with hover effects */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--admin-transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--admin-transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--admin-primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--admin-primary-light);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn-success {
+            background-color: var(--admin-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        .btn-danger {
+            background-color: var(--admin-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            transform: translateY(-3px);
+        }
+
+        /* Image Upload Preview with animation */
+        .image-preview {
+            width: 180px;
+            height: 180px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+            transition: var(--admin-transition);
+        }
+
+        .image-preview:hover {
+            border-color: var(--admin-primary);
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            transition: var(--admin-transition);
+        }
+
+        .image-preview:hover img {
+            transform: scale(1.05);
+        }
+
+        .upload-btn {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .upload-btn input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* Social Media Links Section */
+        .social-links-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .social-link-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            transition: var(--admin-transition);
+            border: 1px solid #eee;
+        }
+
+        .social-link-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-color: var(--admin-primary);
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: var(--admin-transition);
+        }
+
+        .social-icon.github {
+            background-color: #333;
+        }
+
+        .social-icon.linkedin {
+            background-color: #0077b5;
+        }
+
+        .social-icon.twitter {
+            background-color: #1da1f2;
+        }
+
+        .social-icon.instagram {
+            background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+        }
+
+        .social-link-item:hover .social-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .social-link-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: var(--admin-transition);
+        }
+
+        .social-link-input:focus {
+            border-color: var(--admin-primary);
+            outline: none;
+        }
+
+        /* Table Styles with hover rows */
+        .admin-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px var(--admin-border);
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--admin-dark);
+            position: sticky;
+            top: 0;
+        }
+
+        .admin-table tr {
+            transition: var(--admin-transition);
+        }
+
+        .admin-table tr:not(:last-child) {
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-table tr:hover {
+            background-color: #f8f9ff;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: var(--admin-transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        /* AI Training Section with animated response area */
+        .training-section {
+            background-color: #f8f9ff;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(108, 92, 231, 0.1);
+            transition: var(--admin-transition);
+        }
+
+        .training-section:hover {
+            border-color: rgba(108, 92, 231, 0.3);
+        }
+
+        .training-response {
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            transition: var(--admin-transition);
+        }
+
+        .training-response:hover {
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Toggle button for mobile */
+        .admin-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--admin-dark);
+            transition: var(--admin-transition);
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .admin-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+            transform: rotate(90deg);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Pulse animation for notifications */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .admin-sidebar {
+                width: 250px;
+            }
+            .admin-main {
+                margin-left: 250px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
+            .admin-main {
+                margin-left: 0;
+            }
+            .admin-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-main {
+                padding: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .social-links-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-brand">
+                <h2>Portfolio Admin</h2>
+                <p>Manage your portfolio content</p>
+            </div>
+            <ul class="admin-menu">
+                <li><a href="#dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#hero"><i class="fas fa-home"></i> Hero Section</a></li>
+                <li><a href="#about"><i class="fas fa-user"></i> About Section</a></li>
+                <li><a href="#skills"><i class="fas fa-code"></i> Skills Section</a></li>
+                <li><a href="#projects"><i class="fas fa-project-diagram"></i> Projects <span class="badge">3</span></a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> Contact <span class="badge">5</span></a></li>
+                <li><a href="#chatbot"><i class="fas fa-robot"></i> Chatbot Training</a></li>
+                <li><a href="#media"><i class="fas fa-images"></i> Media Library</a></li>
+                <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="#logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main" id="adminMain">
+            <div class="admin-header">
+                <button class="admin-toggle" id="adminToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="admin-title">Dashboard Overview</h1>
+                <div class="admin-user" id="adminUser">
+                    <img src="https://via.placeholder.com/150" alt="Admin">
+                    <div>
+                         <span class="user-name">Kunal</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="visitCount">1,245</h3>
+                        <p>Total Visits</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>5</h3>
+                        <p>Projects</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>24</h3>
+                        <p>New Messages</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon danger">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>87%</h3>
+                        <p>Chatbot Accuracy</p>
+                    </div>
+                </div>
+            </div>
+<!-- Hero Section Editor -->
+<div class="admin-card" id="heroEditor">
+    <div class="card-header">
+        <h3 class="card-title">Hero Section</h3>
+        <button class="btn btn-primary" id="previewHeroBtn">
+            <i class="fas fa-eye"></i> Preview
+        </button>
+    </div>
+
+    <form id="heroForm">
+        <div class="form-group">
+            <label class="form-label">Title</label>
+            <input type="text" class="form-control" name="heroTitle" value="Hello, I'm Kunal" disabled>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Subtitle</label>
+            <input type="text" class="form-control" name="heroSubtitle" value="Web Developer & Creative Coder" disabled>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="heroDescription" disabled>Crafting digital experiences with code and imagination</textarea>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Primary Button Text</label>
+            <input type="text" class="form-control" name="heroBtnPrimary" value="View My Work" disabled>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Secondary Button Text</label>
+            <input type="text" class="form-control" name="heroBtnSecondary" value="Contact Me" disabled>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Hero Image</label>
+            <div class="image-preview" id="heroImagePreview">
+                <span>No image selected</span>
+            </div>
+            <div class="upload-btn">
+                <button type="button" class="btn btn-primary" disabled>
+                    <i class="fas fa-upload"></i> Upload Image
+                </button>
+                <input type="file" id="heroImageUpload" accept="image/*" disabled>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+            <button type="button" class="btn btn-success" id="heroEditBtn">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+      
+        </div>
+    </form>
+</div>
+
+
+          <!-- About Section Editor -->
+<div class="admin-card" id="aboutEditor">
+    <div class="card-header">
+        <h3 class="card-title">About Section</h3>
+        <button class="btn btn-primary" id="previewAboutBtn">
+            <i class="fas fa-eye"></i> Preview
+        </button>
+    </div>
+
+    <form id="aboutForm">
+        <div class="form-group">
+            <label class="form-label">Profile Image</label>
+            <div class="image-preview" id="aboutImagePreview">
+                <span>No image selected</span>
+            </div>
+            <div class="upload-btn">
+                <button type="button" class="btn btn-primary" disabled>
+                    <i class="fas fa-upload"></i> Upload Image
+                </button>
+                <input type="file" id="aboutImageUpload" accept="image/*" disabled>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">About Text</label>
+            <textarea class="form-control" name="aboutText" rows="6" disabled>
+I'm Kunal, a Computer Applications student at IGNOU with a strong passion for web development, app development, and data science. Currently, I'm building my own voice chat application called Modern Talk while continuously improving my skills in coding, UI/UX design, and software development. My goal is to create impactful, modern, and user-friendly digital solutions.
+            </textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-control" name="aboutLocation" value="India" disabled>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Education</label>
+            <input type="text" class="form-control" name="aboutEducation" value="BCA, IGNOU (pursuing)" disabled>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Interests</label>
+            <input type="text" class="form-control" name="aboutInterests" value="Web Development, App Development, Data Science, Design" disabled>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Social Media Links</label>
+            <div class="social-links-container">
+                <div class="social-link-item">
+                    <div class="social-icon github"><i class="fab fa-github"></i></div>
+                    <input type="url" class="social-link-input" name="githubUrl" value="https://github.com/kunal8571" placeholder="GitHub URL" disabled>
+                </div>
+                <div class="social-link-item">
+                    <div class="social-icon linkedin"><i class="fab fa-linkedin"></i></div>
+                    <input type="url" class="social-link-input" name="linkedinUrl" placeholder="LinkedIn URL" disabled>
+                </div>
+                <div class="social-link-item">
+                    <div class="social-icon twitter"><i class="fab fa-twitter"></i></div>
+                    <input type="url" class="social-link-input" name="twitterUrl" placeholder="Twitter URL" disabled>
+                </div>
+                <div class="social-link-item">
+                    <div class="social-icon instagram"><i class="fab fa-instagram"></i></div>
+                    <input type="url" class="social-link-input" name="instagramUrl" placeholder="Instagram URL" disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit/Save button -->
+        <button type="button" class="btn btn-success" id="editToggleBtn">
+            <i class="fas fa-edit"></i> Edit
+        </button>
+    </form>
+</div>
+            <!-- Projects Management -->
+            <div class="admin-card" id="projectsEditor">
+                <div class="card-header">
+                    <h3 class="card-title">Projects Management</h3>
+                    <button class="btn btn-primary" id="addProjectBtn">
+                        <i class="fas fa-plus"></i> Add Project
+                    </button>
+                </div>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Link</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CampusSetu</td>
+                            <td>An educational platform for student-teacher interaction</td>
+                            <td>#</td>
+                            <td class="table-actions">
+                                <button class="btn btn-primary action-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-danger action-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Job Portal Demo</td>
+                            <td>A demo job website connecting recruiters and job seekers</td>
+                            <td>#</td>
+                            <td class="table-actions">
+                                <button class="btn btn-primary action-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-danger action-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Portfolio Website</td>
+                            <td>Personal portfolio showcasing skills and projects</td>
+                            <td>#</td>
+                            <td class="table-actions">
+                                <button class="btn btn-primary action-btn">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-danger action-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chatbot Training -->
+            <div class="admin-card" id="chatbotEditor">
+                <div class="card-header">
+                    <h3 class="card-title">Chatbot Training</h3>
+                    <span class="badge" style="background-color: var(--admin-success);">Active</span>
+                </div>
+                <div class="training-section">
+                    <h4>Train Your Chatbot</h4>
+                    <p>Add questions and responses to improve your chatbot's accuracy.</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Question/Keyword</label>
+                        <input type="text" class="form-control" id="chatbotQuestion" placeholder="e.g., 'What projects have you done?'">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Response</label>
+                        <textarea class="form-control" id="chatbotResponse" rows="3" placeholder="The response your chatbot should give"></textarea>
+                    </div>
+                    <button class="btn btn-primary" id="addTrainingBtn">
+                        <i class="fas fa-plus-circle"></i> Add Training Data
+                    </button>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label class="form-label">Current Training Data</label>
+                        <div class="training-response" id="trainingData">
+                            // Sample training data
+                            {
+                                "greetings": ["Hello! How can I help?", "Hi there! What can I do for you?"],
+                                "projects": ["You can check my projects in the portfolio section!", "I've worked on several projects listed in my portfolio."],
+                                "contact": ["You can reach me through the contact page.", "Feel free to send me a message via the contact form."]
+                            }
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" id="trainModelBtn">
+                        <i class="fas fa-brain"></i> Train Model Now
+                    </button>
+                    <div id="trainingStatus" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // DOM Elements
+        const adminToggle = document.getElementById('adminToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+        const adminMain = document.getElementById('adminMain');
+        const adminUser = document.getElementById('adminUser');
+        const visitCount = document.getElementById('visitCount');
+
+        // Toggle sidebar on mobile
+        adminToggle.addEventListener('click', () => {
+            adminSidebar.classList.toggle('active');
+            adminMain.classList.toggle('expanded');
+        });
+
+        // Simulate visit count animation
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                element.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Animate visit count on page load
+        setTimeout(() => {
+            animateValue(visitCount, 0, 1245, 2000);
+        }, 500);
+
+        // Image preview functionality
+        function setupImagePreview(uploadId, previewId) {
+            const upload = document.getElementById(uploadId);
+            const preview = document.getElementById(previewId);
+            
+            upload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                        preview.querySelector('img').style.animation = 'fadeIn 0.5s ease-out';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Initialize image previews
+        setupImagePreview('heroImageUpload', 'heroImagePreview');
+        setupImagePreview('aboutImageUpload', 'aboutImagePreview');
+
+        // Form submissions with animation
+        document.getElementById('heroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show saving animation
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Show success notification
+                    showNotification('Hero section updated successfully!', 'success');
+                }, 1500);
+            }, 2000);
+        });
+
+        document.getElementById('aboutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show saving animation
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Show success notification
+                    showNotification('About section updated successfully!', 'success');
+                }, 1500);
+            }, 2000);
+        });
+
+        // Chatbot training functionality
+        document.getElementById('addTrainingBtn').addEventListener('click', function() {
+            const question = document.getElementById('chatbotQuestion').value;
+            const response = document.getElementById('chatbotResponse').value;
+            
+            if (question && response) {
+                // Add to training data with animation
+                const trainingData = document.getElementById('trainingData');
+                const newEntry = `\n"${question}": ["${response}"],`;
+                
+                trainingData.style.opacity = '0.5';
+                trainingData.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    trainingData.textContent += newEntry;
+                    trainingData.style.opacity = '1';
+                    trainingData.style.transform = 'translateY(0)';
+                    
+                    // Clear inputs
+                    document.getElementById('chatbotQuestion').value = '';
+                    document.getElementById('chatbotResponse').value = '';
+                    
+                    showNotification('Training data added successfully!', 'success');
+                }, 300);
+            } else {
+                showNotification('Please enter both a question and response', 'error');
+            }
+        });
+
+        document.getElementById('trainModelBtn').addEventListener('click', function() {
+            const status = document.getElementById('trainingStatus');
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Training...';
+            btn.disabled = true;
+            status.textContent = 'Training started...';
+            status.style.color = 'var(--admin-primary)';
+            
+            // Simulate training process with progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                status.textContent = `Training in progress... ${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    status.textContent = 'Model training complete! Accuracy improved to 89%.';
+                    status.style.color = 'var(--admin-success)';
+                    btn.innerHTML = '<i class="fas fa-check"></i> Training Complete';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                    
+                    showNotification('Chatbot training completed successfully!', 'success');
+                }
+            }, 300);
+        });
+
+        // Project management functionality
+        document.getElementById('addProjectBtn').addEventListener('click', function() {
+            showNotification('Add project form would open here', 'info');
+        });
+
+        // Table row actions
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.querySelector('i').className.includes('edit') ? 'Edit' : 'Delete';
+                const project = this.closest('tr').querySelector('td').textContent;
+                
+                if (action === 'Edit') {
+                    showNotification(`Edit project: ${project}`, 'info');
+                } else if (action === 'Delete') {
+                    if (confirm(`Are you sure you want to delete "${project}"?`)) {
+                        const row = this.closest('tr');
+                        row.style.transform = 'translateX(100%)';
+                        row.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            row.remove();
+                            showNotification(`Project "${project}" deleted`, 'success');
+                        }, 300);
+                    }
+                }
+            });
+        });
+
+        // Preview buttons
+        document.getElementById('previewHeroBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('Hero section preview would open here', 'info');
+        });
+
+        document.getElementById('previewAboutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            showNotification('About section preview would open here', 'info');
+        });
+
+        // User dropdown (would be implemented fully in backend version)
+        adminUser.addEventListener('click', function() {
+            showNotification('User menu would open here', 'info');
+        });
+
+        // Notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateY(0)';
+                notification.style.opacity = '1';
+            }, 10);
+            
+            // Remove after delay
+            setTimeout(() => {
+                notification.style.transform = 'translateY(100%)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Add notification styles
+        const notificationStyles = document.createElement('style');
+        notificationStyles.innerHTML = `
+            .notification {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                background-color: white;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                z-index: 10000;
+                transform: translateY(100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+            .notification i {
+                margin-right: 10px;
+                font-size: 1.2rem;
+            }
+            .notification.success {
+                border-left: 4px solid var(--admin-success);
+                color: var(--admin-success);
+            }
+            .notification.error {
+                border-left: 4px solid var(--admin-danger);
+                color: var(--admin-danger);
+            }
+            .notification.info {
+                border-left: 4px solid var(--admin-primary);
+                color: var(--admin-primary);
+            }
+        `;
+        document.head.appendChild(notificationStyles);
+    </script>
+    
+
+      <script>
+//main contact js//
+
+ const heroForm = document.getElementById("heroForm");
+    const heroEditBtn = document.getElementById("heroEditBtn");
+    const heroCancelBtn = document.getElementById("heroCancelBtn");
+    let heroEditing = false;
+
+    heroEditBtn.addEventListener("click", () => {
+        const inputs = heroForm.querySelectorAll("input, textarea, select, button[type='file']");
+
+        if (!heroEditing) {
+            // Enable fields for editing
+            inputs.forEach(el => el.disabled = false);
+
+            // Focus on first input (Title)
+            heroForm.querySelector("input[name='heroTitle']").focus();
+
+            // Change button to Save
+            heroEditBtn.innerHTML = `<i class="fas fa-save"></i> Save`;
+            heroEditBtn.classList.remove("btn-success");
+            heroEditBtn.classList.add("btn-primary");
+
+            // Show Cancel button
+            heroCancelBtn.classList.remove("d-none");
+
+            heroEditing = true;
+        } else {
+            // Save & disable fields again
+            heroForm.submit();
+            inputs.forEach(el => el.disabled = true);
+
+            // Reset buttons
+            heroEditBtn.innerHTML = `<i class="fas fa-edit"></i> Edit`;
+            heroEditBtn.classList.remove("btn-primary");
+            heroEditBtn.classList.add("btn-success");
+            heroCancelBtn.classList.add("d-none");
+
+            heroEditing = false;
+        }
+    });
+
+    heroCancelBtn.addEventListener("click", () => {
+        const inputs = heroForm.querySelectorAll("input, textarea, select, button[type='file']");
+        
+        // Disable fields again
+        inputs.forEach(el => el.disabled = true);
+
+        // Reset buttons
+        heroEditBtn.innerHTML = `<i class="fas fa-edit"></i> Edit`;
+        heroEditBtn.classList.remove("btn-primary");
+        heroEditBtn.classList.add("btn-success");
+        heroCancelBtn.classList.add("d-none");
+
+        heroEditing = false;
+    });
+
+        //about js//
+    const editBtn = document.getElementById("editToggleBtn");
+    const form = document.getElementById("aboutForm");
+    let isEditing = false;
+
+    editBtn.addEventListener("click", () => {
+        const inputs = form.querySelectorAll("input, textarea, select, button[type='file']");
+
+        if (!isEditing) {
+            // Enable fields
+            inputs.forEach(el => el.disabled = false);
+            editBtn.innerHTML = `<i class="fas fa-save"></i> Save`;
+            editBtn.classList.remove("btn-success");
+            editBtn.classList.add("btn-primary");
+            isEditing = true;
+        } else {
+            // Save (submit form)
+            form.submit();
+
+            // Disable fields again
+            inputs.forEach(el => el.disabled = true);
+            editBtn.innerHTML = `<i class="fas fa-edit"></i> Edit`;
+            editBtn.classList.remove("btn-primary");
+            editBtn.classList.add("btn-success");
+            isEditing = false;
+        }
+    });
+
+    
+</script>
+</body>
+</html>
